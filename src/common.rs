@@ -7,17 +7,32 @@ pub use std::{
 };
 use once_cell::sync::Lazy;
 
-pub enum Bind {
-    NormalBind(BindHandler),
-    BlockBind(BlockBindHandler),
-    BlockableBind(BlockableBindHandler),
+struct NormalBind {
+    BlockBindHandler value;
+};
+
+struct BlockBind {
+    BlockBindHandler value;
+};
+
+struct BlockableBindHandler {
+    BlockableBindHandler value;
+};
+
+using Bind = std::variant<NormalBind, BlockBind, BlockableBindHandler>;
+
+using BindHandler = std::shared_ptr<std::function<void()>>;
+using BlockBindHandler = std::shared_ptr<std::function<void()>>;
+using BlockableBindHandler = std::shared_ptr<std::function<BlockInput()>>;
+using KeybdBindMap = std::unordered_map<KeybdKey, Bind>;
+using MouseBindMap = std::unordered_map<MouseButton, Bind>;
+
+boost::synchronized_value<KeybdBindMap>& get_keybd_binds() {
+    static boost::synchronized_value<KeybdBindMap> keybd_binds;
+    return keybd_binds;
 }
 
-pub type BindHandler = Arc<dyn Fn() + Send + Sync + 'static>;
-pub type BlockBindHandler = Arc<dyn Fn() + Send + Sync + 'static>;
-pub type BlockableBindHandler = Arc<dyn Fn() -> BlockInput + Send + Sync + 'static>;
-pub type KeybdBindMap = HashMap<KeybdKey, Bind>;
-pub type MouseBindMap = HashMap<MouseButton, Bind>;
-
-pub static KEYBD_BINDS: Lazy<Mutex<KeybdBindMap>> = Lazy::new(|| Mutex::new(KeybdBindMap::new()));
-pub static MOUSE_BINDS: Lazy<Mutex<MouseBindMap>> = Lazy::new(|| Mutex::new(MouseBindMap::new()));
+boost::synchronized_value<MouseBindMap>& get_mouse_binds() {
+    static boost::synchronized_value<MouseBindMap> mouse_binds;
+    return mouse_binds;
+}
