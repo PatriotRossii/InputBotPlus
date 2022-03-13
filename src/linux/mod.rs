@@ -27,16 +27,28 @@ use x11::xlib::*;
 
 mod inputs;
 
-type ButtonStatesMap = HashMap<MouseButton, bool>;
-type KeyStatesMap = HashMap<KeybdKey, bool>;
+using ButtonStatesMap = std::unordered_map<MouseButton, bool>;
+using KeyStatesMap = std::unordered_map<KeybdKey, bool>;
 
-static BUTTON_STATES: Lazy<Mutex<ButtonStatesMap>> =
-    Lazy::new(|| Mutex::new(ButtonStatesMap::new()));
-static KEY_STATES: Lazy<Mutex<KeyStatesMap>> = Lazy::new(|| Mutex::new(KeyStatesMap::new()));
-static SEND_DISPLAY: Lazy<AtomicPtr<Display>> = Lazy::new(|| {
-    unsafe { XInitThreads() };
-    AtomicPtr::new(unsafe { XOpenDisplay(null()) })
-});
+boost::synchronized_value<ButtonStatesMap>& get_button_states() {
+    static boost::synchronized_value<ButtonStatesMap> value;
+    return value;
+}
+
+boost::synchronized_value<KeyStateMap>& get_key_states() {
+    static boost::synchronized_value<KeyStateMap> value;
+    return value;
+}
+
+std::atomic<std::shared_ptr<Display>> get_send_display() {
+    static std::atomic<std::shared_ptr<Display>> value;
+    if(value.load()) {
+        XInitThreads();
+        value.store(std::shared_ptr(XOpenDisplay(nullptr)));
+    }
+    return value;
+}
+
 static FAKE_DEVICE: Lazy<Mutex<uinput::Device>> = Lazy::new(|| {
     Mutex::new(
         uinput::default()
