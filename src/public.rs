@@ -4,295 +4,440 @@ use std::{thread::sleep, time::Duration};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-pub enum BlockInput {
+#include <cctype>
+
+enum BlockInput {
     Block,
-    DontBlock,
+    DontBlock
+};
+
+struct KeybdKey {
+    enum class Type {
+        Backspace,
+        Tab,
+        Enter,
+        Escape,
+        Space,
+        Home,
+        Left,
+        Up,
+        Right,
+        Down,
+        Insert,
+        Delete,
+        Numrow0,
+        Numrow1,
+        Numrow2,
+        Numrow3,
+        Numrow4,
+        Numrow5,
+        Numrow6,
+        Numrow7,
+        Numrow8,
+        Numrow9,
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U,
+        V,
+        W,
+        X,
+        Y,
+        Z,
+        Numpad0,
+        Numpad1,
+        Numpad2,
+        Numpad3,
+        Numpad4,
+        Numpad5,
+        Numpad6,
+        Numpad7,
+        Numpad8,
+        Numpad9,
+        F1,
+        F2,
+        F3,
+        F4,
+        F5,
+        F6,
+        F7,
+        F8,
+        F9,
+        F10,
+        F11,
+        F12,
+        F13,
+        F14,
+        F15,
+        F16,
+        F17,
+        F18,
+        F19,
+        F20,
+        F21,
+        F22,
+        F23,
+        F24,
+        NumLock,
+        ScrollLock,
+        CapsLock,
+        LShift,
+        RShift,
+        LControl,
+        RControl,
+        End_
+    } type;
+
+    KeybdKey(KeybdKey::Type type)
+        : type{type} { }
+    operator Type() {
+        return type;
+    }
+};
+
+struct MouseButton {
+    enum class Type {
+        Left,
+        Middle,
+        Right,
+        X1,
+        X2,
+        End_
+    } type;
+
+    MouseButton(MouseButton::Type type)
+        : type{type} { }
+    operator Type() {
+        return type;
+    }
+};
+
+struct MouseCursor { };
+
+struct MouseWheel { };
+
+void bind(const KeybdKey& key, std::function<void()> callback) {
+    get_keybd_binds()
+        .synchronize()
+        ->insert({
+            key, Bind{NormalBind{std::make_shared_ptr(callback)}
+        });
 }
 
-#[derive(Debug, Eq, PartialEq, Hash, Copy, Clone, EnumIter)]
-pub enum KeybdKey {
-    BackspaceKey,
-    TabKey,
-    EnterKey,
-    EscapeKey,
-    SpaceKey,
-    HomeKey,
-    LeftKey,
-    UpKey,
-    RightKey,
-    DownKey,
-    InsertKey,
-    DeleteKey,
-    Numrow0Key,
-    Numrow1Key,
-    Numrow2Key,
-    Numrow3Key,
-    Numrow4Key,
-    Numrow5Key,
-    Numrow6Key,
-    Numrow7Key,
-    Numrow8Key,
-    Numrow9Key,
-    AKey,
-    BKey,
-    CKey,
-    DKey,
-    EKey,
-    FKey,
-    GKey,
-    HKey,
-    IKey,
-    JKey,
-    KKey,
-    LKey,
-    MKey,
-    NKey,
-    OKey,
-    PKey,
-    QKey,
-    RKey,
-    SKey,
-    TKey,
-    UKey,
-    VKey,
-    WKey,
-    XKey,
-    YKey,
-    ZKey,
-    Numpad0Key,
-    Numpad1Key,
-    Numpad2Key,
-    Numpad3Key,
-    Numpad4Key,
-    Numpad5Key,
-    Numpad6Key,
-    Numpad7Key,
-    Numpad8Key,
-    Numpad9Key,
-    F1Key,
-    F2Key,
-    F3Key,
-    F4Key,
-    F5Key,
-    F6Key,
-    F7Key,
-    F8Key,
-    F9Key,
-    F10Key,
-    F11Key,
-    F12Key,
-    F13Key,
-    F14Key,
-    F15Key,
-    F16Key,
-    F17Key,
-    F18Key,
-    F19Key,
-    F20Key,
-    F21Key,
-    F22Key,
-    F23Key,
-    F24Key,
-    NumLockKey,
-    ScrollLockKey,
-    CapsLockKey,
-    LShiftKey,
-    RShiftKey,
-    LControlKey,
-    RControlKey,
-
-    #[strum(disabled)]
-    OtherKey(u64),
+void block_bind(const KeybdKey& key, std::function<void()> callback) {
+    get_keybd_binds()
+        .synchronize()
+        ->insert({
+            key, Bind{BlockBind{std::make_shared_ptr(callback)}
+        });
 }
 
-#[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
-pub enum MouseButton {
-    LeftButton,
-    MiddleButton,
-    RightButton,
-    X1Button,
-    X2Button,
-    OtherButton(u32),
+void blockable_bind(const KeybdKey& key, std::function<BlockInput()> callback) {
+    get_keybd_binds()
+        .synchronize()
+        ->insert({
+            key, Bind{BlockableBind{std::make_shared_ptr(callback)}}
+        });
 }
 
-pub struct MouseCursor;
-
-pub struct MouseWheel;
-
-impl KeybdKey {
-    pub fn bind<F: Fn() + Send + Sync + 'static>(self, callback: F) {
-        KEYBD_BINDS
-            .lock()
-            .unwrap()
-            .insert(self, Bind::NormalBind(Arc::new(callback)));
+void bind_all(std::function<void(KeybdKey)> callback) {
+    for(KeybdKey key = static_cast<KeybdKey>(0); key != KeybdKey::End_; key = static_cast<KeybdKey>(static_cast<int>(key) + 1)) {
+        auto fire = std::function([callback, key]() {
+            callback(key)
+        });
+        get_keybd_binds()
+            .synchronize()
+            ->insert({
+                key, Bind{NormalBind{std::make_shared_ptr(callback)}
+            });
     }
+}
 
-    pub fn block_bind<F: Fn() + Send + Sync + 'static>(self, callback: F) {
-        KEYBD_BINDS
-            .lock()
-            .unwrap()
-            .insert(self, Bind::BlockBind(Arc::new(callback)));
+void unbind(const KeybdKey& key) {
+    get_keybd_binds()
+        .synchronize()
+        ->erase(key);
+}
+
+void bind(const MouseButton& button, std::function<void()> callback) {
+    get_mouse_binds()
+        .synchronize()
+        ->insert({
+            key, Bind{NormalBind{std::make_shared_ptr(callback)}
+        });
+}
+
+void block_bind(const MouseButton& button, std::function<void()> callback) {
+    get_mouse_binds()
+        .synchronize()
+        ->insert({
+            key, Bind{BlockBind{std::make_shared_ptr(callback)}
+        });
+}
+
+void blockable_bind(const MouseButton& button, std::function<BlockInput()> callback) {
+    get_mouse_binds()
+        .synchronize()
+        ->insert({
+            key, Bind{BlockableBind{std::make_shared_ptr(callback)}}
+        });
+}
+
+void unbind(const MouseButton& button) {
+    get_mouse_binds()
+        .synchronize()
+        ->erase(key);
+}
+
+char from_keybd_key(KeybdKey key) {
+    switch(static_cast<KeybdKey::Type>(key)) {
+        case KeybdKey::Type::A:
+            return 'a';
+        case KeybdKey::Type::B:
+			return 'b';
+        case KeybdKey::Type::C:
+			return 'c';
+        case KeybdKey::Type::D:
+			return 'd';
+        case KeybdKey::Type::E:
+			return 'e';
+        case KeybdKey::Type::F:
+			return 'f';
+        case KeybdKey::Type::G:
+			return 'g';
+        case KeybdKey::Type::H:
+			return 'h';
+        case KeybdKey::Type::I:
+			return 'i';
+        case KeybdKey::Type::J:
+			return 'j';
+        case KeybdKey::Type::K:
+			return 'k';
+        case KeybdKey::Type::L:
+			return 'l';
+        case KeybdKey::Type::M:
+			return 'm';
+        case KeybdKey::Type::N:
+			return 'n';
+        case KeybdKey::Type::O:
+			return 'o';
+        case KeybdKey::Type::P:
+			return 'p';
+        case KeybdKey::Type::Q:
+			return 'q';
+        case KeybdKey::Type::R:
+			return 'r';
+        case KeybdKey::Type::S:
+			return 's';
+        case KeybdKey::Type::T:
+			return 't';
+        case KeybdKey::Type::U:
+			return 'u';
+        case KeybdKey::Type::V:
+			return 'v';
+        case KeybdKey::Type::W:
+			return 'w';
+        case KeybdKey::Type::X:
+			return 'x';
+        case KeybdKey::Type::Y:
+			return 'y';
+        case KeybdKey::Type::Z:
+			return 'z';
+        case KeybdKey::Type::Numpad0:
+			return '0';
+        case KeybdKey::Type::Numpad1:
+			return '1';
+        case KeybdKey::Type::Numpad2:
+			return '2';
+        case KeybdKey::Type::Numpad3:
+			return '3';
+        case KeybdKey::Type::Numpad4:
+			return '4';
+        case KeybdKey::Type::Numpad5:
+			return '5';
+        case KeybdKey::Type::Numpad6:
+			return '6';
+        case KeybdKey::Type::Numpad7:
+			return '7';
+        case KeybdKey::Type::Numpad8:
+			return '8';
+        case KeybdKey::Type::Numpad9:
+			return '9';
+        case KeybdKey::Type::Numrow0:
+			return '0';
+        case KeybdKey::Type::Numrow1:
+			return '1';
+        case KeybdKey::Type::Numrow2:
+			return '2';
+        case KeybdKey::Type::Numrow3:
+			return '3';
+        case KeybdKey::Type::Numrow4:
+			return '4';
+        case KeybdKey::Type::Numrow5:
+			return '5';
+        case KeybdKey::Type::Numrow6:
+			return '6';
+        case KeybdKey::Type::Numrow7:
+			return '7';
+        case KeybdKey::Type::Numrow8:
+			return '8';
+        case KeybdKey::Type::Numrow9:
+			return '9';
+        default:
+            return '';
     }
+}
 
-    pub fn blockable_bind<F: Fn() -> BlockInput + Send + Sync + 'static>(self, callback: F) {
-        KEYBD_BINDS
-            .lock()
-            .unwrap()
-            .insert(self, Bind::BlockableBind(Arc::new(callback)));
-    }
-
-    pub fn bind_all<F: Fn(KeybdKey) + Send + Sync + Copy + 'static>(callback: F) {
-        for key in KeybdKey::iter() {
-            let fire = move || {
-                callback(key);
+KeybdKey get_keybd_key(char c) {
+    switch(c) {
+        case ' ':
+            return KeybdKey::Type::Space;
+        case 'A':
+			return KeybdKey::Type::A;
+		case 'a':
+			return KeybdKey::Type::A;
+        case 'B':
+			return KeybdKey::Type::B;
+		case 'b':
+			return KeybdKey::Type::B;
+        case 'C':
+			return KeybdKey::Type::C;
+		case 'c':
+			return KeybdKey::Type::C;
+        case 'D':
+			return KeybdKey::Type::D;
+		case 'd':
+			return KeybdKey::Type::D;
+        case 'E':
+			return KeybdKey::Type::E;
+		case 'e':
+			return KeybdKey::Type::E;
+        case 'F':
+			return KeybdKey::Type::F;
+		case 'f':
+			return KeybdKey::Type::F;
+        case 'G':
+			return KeybdKey::Type::G;
+		case 'g':
+			return KeybdKey::Type::G;
+        case 'H':
+			return KeybdKey::Type::H;
+		case 'h':
+			return KeybdKey::Type::H;
+        case 'I':
+			return KeybdKey::Type::I;
+		case 'i':
+			return KeybdKey::Type::I;
+        case 'J':
+			return KeybdKey::Type::J;
+		case 'j':
+			return KeybdKey::Type::J;
+        case 'K':
+			return KeybdKey::Type::K;
+		case 'k':
+			return KeybdKey::Type::K;
+        case 'L':
+			return KeybdKey::Type::L;
+		case 'l':
+			return KeybdKey::Type::L;
+        case 'M':
+			return KeybdKey::Type::M;
+		case 'm':
+			return KeybdKey::Type::M;
+        case 'N':
+			return KeybdKey::Type::N;
+		case 'n':
+			return KeybdKey::Type::N;
+        case 'O':
+			return KeybdKey::Type::O;
+		case 'o':
+			return KeybdKey::Type::O;
+        case 'P':
+			return KeybdKey::Type::P;
+		case 'p':
+			return KeybdKey::Type::P;
+        case 'Q':
+			return KeybdKey::Type::Q;
+		case 'q':
+			return KeybdKey::Type::Q;
+        case 'R':
+			return KeybdKey::Type::R;
+		case 'r':
+			return KeybdKey::Type::R;
+        case 'S':
+			return KeybdKey::Type::S;
+		case 's':
+			return KeybdKey::Type::S;
+        case 'T':
+			return KeybdKey::Type::T;
+		case 't':
+			return KeybdKey::Type::T;
+        case 'U':
+			return KeybdKey::Type::U;
+		case 'u':
+			return KeybdKey::Type::U;
+        case 'V':
+			return KeybdKey::Type::V;
+		case 'v':
+			return KeybdKey::Type::V;
+        case 'W':
+			return KeybdKey::Type::W;
+		case 'w':
+			return KeybdKey::Type::W;
+        case 'X':
+			return KeybdKey::Type::X;
+		case 'x':
+			return KeybdKey::Type::X;
+        case 'Y':
+			return KeybdKey::Type::Y;
+		case 'y':
+			return KeybdKey::Type::Y;
+        case 'Z':
+			return KeybdKey::Type::Z;
+		case 'z':
+			return KeybdKey::Type::Z;
+        default:
+            throw std::runtime_error{
+                "There are no such keyboard key"
             };
+    }
+}
 
-            KEYBD_BINDS
-                .lock()
-                .unwrap()
-                .insert(key, Bind::NormalBind(Arc::new(fire)));
+struct KeySequence {
+    std::string sequence;
+    void send() const {
+        for(const char& x: sequence) {
+            bool uppercase = std::isupper(x);
+            auto keybd_key = get_keybd_key(x);
+            
+            if(uppercase) {
+                press(KeybdKey::Type::LShift);
+            }
+
+            press(keybd_key);
+            sleep(20ms);
+            release(Keybd_key);
+
+            if(uppercase) {
+                release(KeybdKey::Type::LShift);
+            }
         }
     }
-
-    pub fn unbind(self) {
-        KEYBD_BINDS.lock().unwrap().remove(&self);
-    }
-}
-
-impl MouseButton {
-    pub fn bind<F: Fn() + Send + Sync + 'static>(self, callback: F) {
-        MOUSE_BINDS
-            .lock()
-            .unwrap()
-            .insert(self, Bind::NormalBind(Arc::new(callback)));
-    }
-
-    pub fn block_bind<F: Fn() + Send + Sync + 'static>(self, callback: F) {
-        MOUSE_BINDS
-            .lock()
-            .unwrap()
-            .insert(self, Bind::BlockBind(Arc::new(callback)));
-    }
-
-    pub fn blockable_bind<F: Fn() -> BlockInput + Send + Sync + 'static>(self, callback: F) {
-        MOUSE_BINDS
-            .lock()
-            .unwrap()
-            .insert(self, Bind::BlockableBind(Arc::new(callback)));
-    }
-
-    pub fn unbind(self) {
-        MOUSE_BINDS.lock().unwrap().remove(&self);
-    }
-}
-
-pub fn from_keybd_key(k: KeybdKey) -> Option<char> {
-    match k {
-        KeybdKey::AKey => Some('a'),
-        KeybdKey::BKey => Some('b'),
-        KeybdKey::CKey => Some('c'),
-        KeybdKey::DKey => Some('d'),
-        KeybdKey::EKey => Some('e'),
-        KeybdKey::FKey => Some('f'),
-        KeybdKey::GKey => Some('g'),
-        KeybdKey::HKey => Some('h'),
-        KeybdKey::IKey => Some('i'),
-        KeybdKey::JKey => Some('j'),
-        KeybdKey::KKey => Some('k'),
-        KeybdKey::LKey => Some('l'),
-        KeybdKey::MKey => Some('m'),
-        KeybdKey::NKey => Some('n'),
-        KeybdKey::OKey => Some('o'),
-        KeybdKey::PKey => Some('p'),
-        KeybdKey::QKey => Some('q'),
-        KeybdKey::RKey => Some('r'),
-        KeybdKey::SKey => Some('s'),
-        KeybdKey::TKey => Some('t'),
-        KeybdKey::UKey => Some('u'),
-        KeybdKey::VKey => Some('v'),
-        KeybdKey::WKey => Some('w'),
-        KeybdKey::XKey => Some('x'),
-        KeybdKey::YKey => Some('y'),
-        KeybdKey::ZKey => Some('z'),
-        KeybdKey::Numpad0Key => Some('0'),
-        KeybdKey::Numpad1Key => Some('1'),
-        KeybdKey::Numpad2Key => Some('2'),
-        KeybdKey::Numpad3Key => Some('3'),
-        KeybdKey::Numpad4Key => Some('4'),
-        KeybdKey::Numpad5Key => Some('5'),
-        KeybdKey::Numpad6Key => Some('6'),
-        KeybdKey::Numpad7Key => Some('7'),
-        KeybdKey::Numpad8Key => Some('8'),
-        KeybdKey::Numpad9Key => Some('9'),
-        KeybdKey::Numrow0Key => Some('0'),
-        KeybdKey::Numrow1Key => Some('1'),
-        KeybdKey::Numrow2Key => Some('2'),
-        KeybdKey::Numrow3Key => Some('3'),
-        KeybdKey::Numrow4Key => Some('4'),
-        KeybdKey::Numrow5Key => Some('5'),
-        KeybdKey::Numrow6Key => Some('6'),
-        KeybdKey::Numrow7Key => Some('7'),
-        KeybdKey::Numrow8Key => Some('8'),
-        KeybdKey::Numrow9Key => Some('9'),
-        _ => None
-    }
-}
-
-pub fn get_keybd_key(c: char) -> Option<KeybdKey> {
-    match c {
-        ' ' => Some(KeybdKey::SpaceKey),
-        'A' | 'a' => Some(KeybdKey::AKey),
-        'B' | 'b' => Some(KeybdKey::BKey),
-        'C' | 'c' => Some(KeybdKey::CKey),
-        'D' | 'd' => Some(KeybdKey::DKey),
-        'E' | 'e' => Some(KeybdKey::EKey),
-        'F' | 'f' => Some(KeybdKey::FKey),
-        'G' | 'g' => Some(KeybdKey::GKey),
-        'H' | 'h' => Some(KeybdKey::HKey),
-        'I' | 'i' => Some(KeybdKey::IKey),
-        'J' | 'j' => Some(KeybdKey::JKey),
-        'K' | 'k' => Some(KeybdKey::KKey),
-        'L' | 'l' => Some(KeybdKey::LKey),
-        'M' | 'm' => Some(KeybdKey::MKey),
-        'N' | 'n' => Some(KeybdKey::NKey),
-        'O' | 'o' => Some(KeybdKey::OKey),
-        'P' | 'p' => Some(KeybdKey::PKey),
-        'Q' | 'q' => Some(KeybdKey::QKey),
-        'R' | 'r' => Some(KeybdKey::RKey),
-        'S' | 's' => Some(KeybdKey::SKey),
-        'T' | 't' => Some(KeybdKey::TKey),
-        'U' | 'u' => Some(KeybdKey::UKey),
-        'V' | 'v' => Some(KeybdKey::VKey),
-        'W' | 'w' => Some(KeybdKey::WKey),
-        'X' | 'x' => Some(KeybdKey::XKey),
-        'Y' | 'y' => Some(KeybdKey::YKey),
-        'Z' | 'z' => Some(KeybdKey::ZKey),
-        _ => None,
-    }
-}
-
-pub struct KeySequence(pub &'static str);
-
-impl KeySequence {
-    pub fn send(&self) {
-        for c in self.0.chars() {
-            let mut uppercase = false;
-            if let Some(keybd_key) = {
-                if c.is_uppercase() {
-                    uppercase = true;
-                }
-                get_keybd_key(c)
-            } {
-                if uppercase {
-                    KeybdKey::LShiftKey.press();
-                }
-                keybd_key.press();
-                sleep(Duration::from_millis(20));
-                keybd_key.release();
-                if uppercase {
-                    KeybdKey::LShiftKey.release();
-                }
-            };
-        }
-    }
-}
+};
