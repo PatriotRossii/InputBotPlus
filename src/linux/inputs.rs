@@ -1,291 +1,521 @@
-use crate::public::{
-    KeybdKey::{self, *},
-    MouseButton::{self, *},
-};
-
-impl From<KeybdKey> for u64 {
-    fn from(key: KeybdKey) -> u64 {
-        match key {
-            BackspaceKey => 0xFF08,
-            TabKey => 0xFF09,
-            EnterKey => 0xFF8D,
-            EscapeKey => 0xFF1B,
-            SpaceKey => 0x020,
-            HomeKey => 0xFF50,
-            LeftKey => 0xFF51,
-            UpKey => 0xFF52,
-            RightKey => 0xFF53,
-            DownKey => 0xFF54,
-            InsertKey => 0xFF63,
-            DeleteKey => 0xFF9F,
-            Numrow0Key => 0x030,
-            Numrow1Key => 0x031,
-            Numrow2Key => 0x032,
-            Numrow3Key => 0x033,
-            Numrow4Key => 0x034,
-            Numrow5Key => 0x035,
-            Numrow6Key => 0x036,
-            Numrow7Key => 0x037,
-            Numrow8Key => 0x038,
-            Numrow9Key => 0x039,
-            AKey => 0x041,
-            BKey => 0x042,
-            CKey => 0x043,
-            DKey => 0x044,
-            EKey => 0x045,
-            FKey => 0x046,
-            GKey => 0x047,
-            HKey => 0x048,
-            IKey => 0x049,
-            JKey => 0x04A,
-            KKey => 0x04B,
-            LKey => 0x04C,
-            MKey => 0x04D,
-            NKey => 0x04E,
-            OKey => 0x04F,
-            PKey => 0x050,
-            QKey => 0x051,
-            RKey => 0x052,
-            SKey => 0x053,
-            TKey => 0x054,
-            UKey => 0x055,
-            VKey => 0x056,
-            WKey => 0x057,
-            XKey => 0x058,
-            YKey => 0x059,
-            ZKey => 0x05A,
-            Numpad0Key => 0xFFB0,
-            Numpad1Key => 0xFFB1,
-            Numpad2Key => 0xFFB2,
-            Numpad3Key => 0xFFB3,
-            Numpad4Key => 0xFFB4,
-            Numpad5Key => 0xFFB5,
-            Numpad6Key => 0xFFB6,
-            Numpad7Key => 0xFFB7,
-            Numpad8Key => 0xFFB8,
-            Numpad9Key => 0xFFB9,
-            F1Key => 0xFFBE,
-            F2Key => 0xFFBF,
-            F3Key => 0xFFC0,
-            F4Key => 0xFFC1,
-            F5Key => 0xFFC2,
-            F6Key => 0xFFC3,
-            F7Key => 0xFFC4,
-            F8Key => 0xFFC5,
-            F9Key => 0xFFC6,
-            F10Key => 0xFFC7,
-            F11Key => 0xFFC8,
-            F12Key => 0xFFC9,
-            F13Key => 0xFFCA,
-            F14Key => 0xFFCB,
-            F15Key => 0xFFCC,
-            F16Key => 0xFFCD,
-            F17Key => 0xFFCE,
-            F18Key => 0xFFCF,
-            F19Key => 0xFFD0,
-            F20Key => 0xFFD1,
-            F21Key => 0xFFD2,
-            F22Key => 0xFFD3,
-            F23Key => 0xFFD4,
-            F24Key => 0xFFD5,
-            NumLockKey => 0xFF7F,
-            ScrollLockKey => 0xFF14,
-            CapsLockKey => 0xFFE5,
-            LShiftKey => 0xFFE1,
-            RShiftKey => 0xFFE2,
-            LControlKey => 0xFFE3,
-            RControlKey => 0xFFE4,
-            OtherKey(keycode) => keycode,
-        }
+KeybdKey::operator std::size_t() {
+    switch(static_cast<KeybdKey::Type>(key)) {
+        case KeybdKey::Type::Backspace:
+			return 0xFF08;
+        case KeybdKey::Type::Tab:
+			return 0xFF09;
+        case KeybdKey::Type::Enter:
+			return 0xFF8D;
+        case KeybdKey::Type::Escape:
+			return 0xFF1B;
+        case KeybdKey::Type::Space:
+			return 0x020;
+        case KeybdKey::Type::Home:
+			return 0xFF50;
+        case KeybdKey::Type::Left:
+			return 0xFF51;
+        case KeybdKey::Type::Up:
+			return 0xFF52;
+        case KeybdKey::Type::Right:
+			return 0xFF53;
+        case KeybdKey::Type::Down:
+			return 0xFF54;
+        case KeybdKey::Type::Insert:
+			return 0xFF63;
+        case KeybdKey::Type::Delete:
+			return 0xFF9F;
+        case KeybdKey::Type::Numrow0:
+			return 0x030;
+        case KeybdKey::Type::Numrow1:
+			return 0x031;
+        case KeybdKey::Type::Numrow2:
+			return 0x032;
+        case KeybdKey::Type::Numrow3:
+			return 0x033;
+        case KeybdKey::Type::Numrow4:
+			return 0x034;
+        case KeybdKey::Type::Numrow5:
+			return 0x035;
+        case KeybdKey::Type::Numrow6:
+			return 0x036;
+        case KeybdKey::Type::Numrow7:
+			return 0x037;
+        case KeybdKey::Type::Numrow8:
+			return 0x038;
+        case KeybdKey::Type::Numrow9:
+			return 0x039;
+        case KeybdKey::Type::A:
+			return 0x041;
+        case KeybdKey::Type::B:
+			return 0x042;
+        case KeybdKey::Type::C:
+			return 0x043;
+        case KeybdKey::Type::D:
+			return 0x044;
+        case KeybdKey::Type::E:
+			return 0x045;
+        case KeybdKey::Type::F:
+			return 0x046;
+        case KeybdKey::Type::G:
+			return 0x047;
+        case KeybdKey::Type::H:
+			return 0x048;
+        case KeybdKey::Type::I:
+			return 0x049;
+        case KeybdKey::Type::J:
+			return 0x04A;
+        case KeybdKey::Type::K:
+			return 0x04B;
+        case KeybdKey::Type::L:
+			return 0x04C;
+        case KeybdKey::Type::M:
+			return 0x04D;
+        case KeybdKey::Type::N:
+			return 0x04E;
+        case KeybdKey::Type::O:
+			return 0x04F;
+        case KeybdKey::Type::P:
+			return 0x050;
+        case KeybdKey::Type::Q:
+			return 0x051;
+        case KeybdKey::Type::R:
+			return 0x052;
+        case KeybdKey::Type::S:
+			return 0x053;
+        case KeybdKey::Type::T:
+			return 0x054;
+        case KeybdKey::Type::U:
+			return 0x055;
+        case KeybdKey::Type::V:
+			return 0x056;
+        case KeybdKey::Type::W:
+			return 0x057;
+        case KeybdKey::Type::X:
+			return 0x058;
+        case KeybdKey::Type::Y:
+			return 0x059;
+        case KeybdKey::Type::Z:
+			return 0x05A;
+        case KeybdKey::Type::Numpad0:
+			return 0xFFB0;
+        case KeybdKey::Type::Numpad1:
+			return 0xFFB1;
+        case KeybdKey::Type::Numpad2:
+			return 0xFFB2;
+        case KeybdKey::Type::Numpad3:
+			return 0xFFB3;
+        case KeybdKey::Type::Numpad4:
+			return 0xFFB4;
+        case KeybdKey::Type::Numpad5:
+			return 0xFFB5;
+        case KeybdKey::Type::Numpad6:
+			return 0xFFB6;
+        case KeybdKey::Type::Numpad7:
+			return 0xFFB7;
+        case KeybdKey::Type::Numpad8:
+			return 0xFFB8;
+        case KeybdKey::Type::Numpad9:
+			return 0xFFB9;
+        case KeybdKey::Type::F1:
+			return 0xFFBE;
+        case KeybdKey::Type::F2:
+			return 0xFFBF;
+        case KeybdKey::Type::F3:
+			return 0xFFC0;
+        case KeybdKey::Type::F4:
+			return 0xFFC1;
+        case KeybdKey::Type::F5:
+			return 0xFFC2;
+        case KeybdKey::Type::F6:
+			return 0xFFC3;
+        case KeybdKey::Type::F7:
+			return 0xFFC4;
+        case KeybdKey::Type::F8:
+			return 0xFFC5;
+        case KeybdKey::Type::F9:
+			return 0xFFC6;
+        case KeybdKey::Type::F10:
+			return 0xFFC7;
+        case KeybdKey::Type::F11:
+			return 0xFFC8;
+        case KeybdKey::Type::F12:
+			return 0xFFC9;
+        case KeybdKey::Type::F13:
+			return 0xFFCA;
+        case KeybdKey::Type::F14:
+			return 0xFFCB;
+        case KeybdKey::Type::F15:
+			return 0xFFCC;
+        case KeybdKey::Type::F16:
+			return 0xFFCD;
+        case KeybdKey::Type::F17:
+			return 0xFFCE;
+        case KeybdKey::Type::F18:
+			return 0xFFCF;
+        case KeybdKey::Type::F19:
+			return 0xFFD0;
+        case KeybdKey::Type::F20:
+			return 0xFFD1;
+        case KeybdKey::Type::F21:
+			return 0xFFD2;
+        case KeybdKey::Type::F22:
+			return 0xFFD3;
+        case KeybdKey::Type::F23:
+			return 0xFFD4;
+        case KeybdKey::Type::F24:
+			return 0xFFD5;
+        case KeybdKey::Type::NumLock:
+			return 0xFF7F;
+        case KeybdKey::Type::ScrollLock:
+			return 0xFF14;
+        case KeybdKey::Type::CapsLock:
+			return 0xFFE5;
+        case KeybdKey::Type::LShift:
+			return 0xFFE1;
+        case KeybdKey::Type::RShift:
+			return 0xFFE2;
+        case KeybdKey::Type::LControl:
+			return 0xFFE3;
+        case KeybdKey::Type::RControl:
+			return 0xFFE4;
     }
 }
 
-impl From<u32> for MouseButton {
-    fn from(keycode: u32) -> MouseButton {
-        match keycode {
-            1 => LeftButton,
-            2 => MiddleButton,
-            3 => RightButton,
-            4 => X1Button,
-            5 => X2Button,
-            _ => OtherButton(keycode),
-        }
+MouseButton::MouseButton(std::uint32_t keycode) {
+    switch(keycode) {
+        case 1:
+            return MouseButton::Type::Left;
+        case 2:
+            return MouseButton::Type::Middle;
+        case 3:
+            return MouseButton::Type::Right;
+        case 4:
+            return MouseButton::Type::X1;
+        case 5:
+            return MouseButton::Type::X2;
     }
 }
 
-impl From<MouseButton> for u32 {
-    fn from(button: MouseButton) -> u32 {
-        match button {
-            LeftButton => 1,
-            MiddleButton => 2,
-            RightButton => 3,
-            X1Button => 4,
-            X2Button => 5,
-            OtherButton(keycode) => keycode,
-        }
+MouseButton::operator std::uint32_t() {
+    switch(type) {
+        case Type::Left:
+            return 1;
+        case Type::Middle:
+            return 2;
+        case Type::Right:
+            return 3;
+        case Type::X1:
+            return 4;
+        case Type::X2:
+            return 5;
     }
 }
 
 // https://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
-pub fn scan_code_to_key(scan_code: u32) -> Option<KeybdKey> {
-    match scan_code {
-        0x0e => Some(BackspaceKey),
-        0x0f => Some(TabKey),
-        0x1c => Some(EnterKey),
-        0x01 => Some(EscapeKey),
-        0x39 => Some(SpaceKey),
-        0x47 => Some(HomeKey),
-        0x4b => Some(LeftKey),
-        0x48 => Some(UpKey),
-        0x4d => Some(RightKey),
-        0x50 => Some(DownKey),
-        0x52 => Some(InsertKey),
-        0x53 => Some(DeleteKey),
-        0x0b => Some(Numrow0Key),
-        0x02 => Some(Numrow1Key),
-        0x03 => Some(Numrow2Key),
-        0x04 => Some(Numrow3Key),
-        0x05 => Some(Numrow4Key),
-        0x06 => Some(Numrow5Key),
-        0x07 => Some(Numrow6Key),
-        0x08 => Some(Numrow7Key),
-        0x09 => Some(Numrow8Key),
-        0x0a => Some(Numrow9Key),
-        0x1e => Some(AKey),
-        0x30 => Some(BKey),
-        0x2e => Some(CKey),
-        0x20 => Some(DKey),
-        0x12 => Some(EKey),
-        0x21 => Some(FKey),
-        0x22 => Some(GKey),
-        0x23 => Some(HKey),
-        0x17 => Some(IKey),
-        0x24 => Some(JKey),
-        0x25 => Some(KKey),
-        0x26 => Some(LKey),
-        0x32 => Some(MKey),
-        0x31 => Some(NKey),
-        0x18 => Some(OKey),
-        0x19 => Some(PKey),
-        0x10 => Some(QKey),
-        0x13 => Some(RKey),
-        0x1f => Some(SKey),
-        0x14 => Some(TKey),
-        0x16 => Some(UKey),
-        0x2f => Some(VKey),
-        0x11 => Some(WKey),
-        0x2d => Some(XKey),
-        0x15 => Some(YKey),
-        0x2c => Some(ZKey),
-        0x52 => Some(Numpad0Key),
-        0x4f => Some(Numpad1Key),
-        0x50 => Some(Numpad2Key),
-        0x51 => Some(Numpad3Key),
-        0x4b => Some(Numpad4Key),
-        0x4c => Some(Numpad5Key),
-        0x4d => Some(Numpad6Key),
-        0x47 => Some(Numpad7Key),
-        0x48 => Some(Numpad8Key),
-        0x49 => Some(Numpad9Key),
-        0x3b => Some(F1Key),
-        0x3c => Some(F2Key),
-        0x3d => Some(F3Key),
-        0x3e => Some(F4Key),
-        0x3f => Some(F5Key),
-        0x40 => Some(F6Key),
-        0x41 => Some(F7Key),
-        0x42 => Some(F8Key),
-        0x43 => Some(F9Key),
-        0x44 => Some(F10Key),
-        0x45 => Some(NumLockKey),
-        0x46 => Some(ScrollLockKey),
-        0x3a => Some(CapsLockKey),
-        0x2a => Some(LShiftKey),
-        0x36 => Some(RShiftKey),
-        0x1d => Some(LControlKey),
-        _ => None,
+KeybdKey scan_code_to_key(std::uint32_t scan_code) {
+    switch(scan_code) {
+        case 0x0e:
+			return KeybdKey::Type::Backspace; 
+        case 0x0f:
+			return KeybdKey::Type::Tab; 
+        case 0x1c:
+			return KeybdKey::Type::Enter; 
+        case 0x01:
+			return KeybdKey::Type::Escape; 
+        case 0x39:
+			return KeybdKey::Type::Space; 
+        case 0x47:
+			return KeybdKey::Type::Home; 
+        case 0x4b:
+			return KeybdKey::Type::Left; 
+        case 0x48:
+			return KeybdKey::Type::Up; 
+        case 0x4d:
+			return KeybdKey::Type::Right; 
+        case 0x50:
+			return KeybdKey::Type::Down; 
+        case 0x52:
+			return KeybdKey::Type::Insert; 
+        case 0x53:
+			return KeybdKey::Type::Delete; 
+        case 0x0b:
+			return KeybdKey::Type::Numrow0; 
+        case 0x02:
+			return KeybdKey::Type::Numrow1; 
+        case 0x03:
+			return KeybdKey::Type::Numrow2; 
+        case 0x04:
+			return KeybdKey::Type::Numrow3; 
+        case 0x05:
+			return KeybdKey::Type::Numrow4; 
+        case 0x06:
+			return KeybdKey::Type::Numrow5; 
+        case 0x07:
+			return KeybdKey::Type::Numrow6; 
+        case 0x08:
+			return KeybdKey::Type::Numrow7; 
+        case 0x09:
+			return KeybdKey::Type::Numrow8; 
+        case 0x0a:
+			return KeybdKey::Type::Numrow9; 
+        case 0x1e:
+			return KeybdKey::Type::A; 
+        case 0x30:
+			return KeybdKey::Type::B; 
+        case 0x2e:
+			return KeybdKey::Type::C; 
+        case 0x20:
+			return KeybdKey::Type::D; 
+        case 0x12:
+			return KeybdKey::Type::E; 
+        case 0x21:
+			return KeybdKey::Type::F; 
+        case 0x22:
+			return KeybdKey::Type::G; 
+        case 0x23:
+			return KeybdKey::Type::H; 
+        case 0x17:
+			return KeybdKey::Type::I; 
+        case 0x24:
+			return KeybdKey::Type::J; 
+        case 0x25:
+			return KeybdKey::Type::K; 
+        case 0x26:
+			return KeybdKey::Type::L; 
+        case 0x32:
+			return KeybdKey::Type::M; 
+        case 0x31:
+			return KeybdKey::Type::N; 
+        case 0x18:
+			return KeybdKey::Type::O; 
+        case 0x19:
+			return KeybdKey::Type::P; 
+        case 0x10:
+			return KeybdKey::Type::Q; 
+        case 0x13:
+			return KeybdKey::Type::R; 
+        case 0x1f:
+			return KeybdKey::Type::S; 
+        case 0x14:
+			return KeybdKey::Type::T; 
+        case 0x16:
+			return KeybdKey::Type::U; 
+        case 0x2f:
+			return KeybdKey::Type::V; 
+        case 0x11:
+			return KeybdKey::Type::W; 
+        case 0x2d:
+			return KeybdKey::Type::X; 
+        case 0x15:
+			return KeybdKey::Type::Y; 
+        case 0x2c:
+			return KeybdKey::Type::Z; 
+        case 0x52:
+			return KeybdKey::Type::Numpad0; 
+        case 0x4f:
+			return KeybdKey::Type::Numpad1; 
+        case 0x50:
+			return KeybdKey::Type::Numpad2; 
+        case 0x51:
+			return KeybdKey::Type::Numpad3; 
+        case 0x4b:
+			return KeybdKey::Type::Numpad4; 
+        case 0x4c:
+			return KeybdKey::Type::Numpad5; 
+        case 0x4d:
+			return KeybdKey::Type::Numpad6; 
+        case 0x47:
+			return KeybdKey::Type::Numpad7; 
+        case 0x48:
+			return KeybdKey::Type::Numpad8; 
+        case 0x49:
+			return KeybdKey::Type::Numpad9; 
+        case 0x3b:
+			return KeybdKey::Type::F1; 
+        case 0x3c:
+			return KeybdKey::Type::F2; 
+        case 0x3d:
+			return KeybdKey::Type::F3; 
+        case 0x3e:
+			return KeybdKey::Type::F4; 
+        case 0x3f:
+			return KeybdKey::Type::F5; 
+        case 0x40:
+			return KeybdKey::Type::F6; 
+        case 0x41:
+			return KeybdKey::Type::F7; 
+        case 0x42:
+			return KeybdKey::Type::F8; 
+        case 0x43:
+			return KeybdKey::Type::F9; 
+        case 0x44:
+			return KeybdKey::Type::F10; 
+        case 0x45:
+			return KeybdKey::Type::NumLock; 
+        case 0x46:
+			return KeybdKey::Type::ScrollLock; 
+        case 0x3a:
+			return KeybdKey::Type::CapsLock; 
+        case 0x2a:
+			return KeybdKey::Type::LShift; 
+        case 0x36:
+			return KeybdKey::Type::RShift; 
+        case 0x1d:
+			return KeybdKey::Type::LControl; 
     }
 }
 
 // https://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
-pub fn key_to_scan_code(key: KeybdKey) -> i32 {
-    match key {
-        BackspaceKey => 0x0e,
-        TabKey => 0x0f,
-        EnterKey => 0x1c,
-        EscapeKey => 0x01,
-        SpaceKey => 0x39,
-        HomeKey => 0x47,
-        LeftKey => 0x4b,
-        UpKey => 0x48,
-        RightKey => 0x4d,
-        DownKey => 0x50,
-        InsertKey => 0x52,
-        DeleteKey => 0x53,
-        Numrow0Key => 0x0b,
-        Numrow1Key => 0x02,
-        Numrow2Key => 0x03,
-        Numrow3Key => 0x04,
-        Numrow4Key => 0x05,
-        Numrow5Key => 0x06,
-        Numrow6Key => 0x07,
-        Numrow7Key => 0x08,
-        Numrow8Key => 0x09,
-        Numrow9Key => 0x0a,
-        AKey => 0x1e,
-        BKey => 0x30,
-        CKey => 0x2e,
-        DKey => 0x20,
-        EKey => 0x12,
-        FKey => 0x21,
-        GKey => 0x22,
-        HKey => 0x23,
-        IKey => 0x17,
-        JKey => 0x24,
-        KKey => 0x25,
-        LKey => 0x26,
-        MKey => 0x32,
-        NKey => 0x31,
-        OKey => 0x18,
-        PKey => 0x19,
-        QKey => 0x10,
-        RKey => 0x13,
-        SKey => 0x1f,
-        TKey => 0x14,
-        UKey => 0x16,
-        VKey => 0x2f,
-        WKey => 0x11,
-        XKey => 0x2d,
-        YKey => 0x15,
-        ZKey => 0x2c,
-        Numpad0Key => 0x52,
-        Numpad1Key => 0x4f,
-        Numpad2Key => 0x50,
-        Numpad3Key => 0x51,
-        Numpad4Key => 0x4b,
-        Numpad5Key => 0x4c,
-        Numpad6Key => 0x4d,
-        Numpad7Key => 0x47,
-        Numpad8Key => 0x48,
-        Numpad9Key => 0x49,
-        F1Key => 0x3b,
-        F2Key => 0x3c,
-        F3Key => 0x3d,
-        F4Key => 0x3e,
-        F5Key => 0x3f,
-        F6Key => 0x40,
-        F7Key => 0x41,
-        F8Key => 0x42,
-        F9Key => 0x43,
-        F10Key => 0x44,
-        NumLockKey => 0x45,
-        ScrollLockKey => 0x46,
-        CapsLockKey => 0x3a,
-        LShiftKey => 0x2a,
-        RShiftKey => 0x36,
-        LControlKey => 0x1d,
-        OtherKey(code) => code as i32,
-        _ => 0x0,
+std::uint32_t key_to_scan_code(KeybdKey key) {
+    switch(static_cast<KeybdKey::Type>(key)) {
+        case KeybdKey::Type::Backspace:
+			return 0x0e;
+        case KeybdKey::Type::Tab:
+			return 0x0f;
+        case KeybdKey::Type::Enter:
+			return 0x1c;
+        case KeybdKey::Type::Escape:
+			return 0x01;
+        case KeybdKey::Type::Space:
+			return 0x39;
+        case KeybdKey::Type::Home:
+			return 0x47;
+        case KeybdKey::Type::Left:
+			return 0x4b;
+        case KeybdKey::Type::Up:
+			return 0x48;
+        case KeybdKey::Type::Right:
+			return 0x4d;
+        case KeybdKey::Type::Down:
+			return 0x50;
+        case KeybdKey::Type::Insert:
+			return 0x52;
+        case KeybdKey::Type::Delete:
+			return 0x53;
+        case KeybdKey::Type::Numrow0:
+			return 0x0b;
+        case KeybdKey::Type::Numrow1:
+			return 0x02;
+        case KeybdKey::Type::Numrow2:
+			return 0x03;
+        case KeybdKey::Type::Numrow3:
+			return 0x04;
+        case KeybdKey::Type::Numrow4:
+			return 0x05;
+        case KeybdKey::Type::Numrow5:
+			return 0x06;
+        case KeybdKey::Type::Numrow6:
+			return 0x07;
+        case KeybdKey::Type::Numrow7:
+			return 0x08;
+        case KeybdKey::Type::Numrow8:
+			return 0x09;
+        case KeybdKey::Type::Numrow9:
+			return 0x0a;
+        case KeybdKey::Type::A:
+			return 0x1e;
+        case KeybdKey::Type::B:
+			return 0x30;
+        case KeybdKey::Type::C:
+			return 0x2e;
+        case KeybdKey::Type::D:
+			return 0x20;
+        case KeybdKey::Type::E:
+			return 0x12;
+        case KeybdKey::Type::F:
+			return 0x21;
+        case KeybdKey::Type::G:
+			return 0x22;
+        case KeybdKey::Type::H:
+			return 0x23;
+        case KeybdKey::Type::I:
+			return 0x17;
+        case KeybdKey::Type::J:
+			return 0x24;
+        case KeybdKey::Type::K:
+			return 0x25;
+        case KeybdKey::Type::L:
+			return 0x26;
+        case KeybdKey::Type::M:
+			return 0x32;
+        case KeybdKey::Type::N:
+			return 0x31;
+        case KeybdKey::Type::O:
+			return 0x18;
+        case KeybdKey::Type::P:
+			return 0x19;
+        case KeybdKey::Type::Q:
+			return 0x10;
+        case KeybdKey::Type::R:
+			return 0x13;
+        case KeybdKey::Type::S:
+			return 0x1f;
+        case KeybdKey::Type::T:
+			return 0x14;
+        case KeybdKey::Type::U:
+			return 0x16;
+        case KeybdKey::Type::V:
+			return 0x2f;
+        case KeybdKey::Type::W:
+			return 0x11;
+        case KeybdKey::Type::X:
+			return 0x2d;
+        case KeybdKey::Type::Y:
+			return 0x15;
+        case KeybdKey::Type::Z:
+			return 0x2c;
+        case KeybdKey::Type::Numpad0:
+			return 0x52;
+        case KeybdKey::Type::Numpad1:
+			return 0x4f;
+        case KeybdKey::Type::Numpad2:
+			return 0x50;
+        case KeybdKey::Type::Numpad3:
+			return 0x51;
+        case KeybdKey::Type::Numpad4:
+			return 0x4b;
+        case KeybdKey::Type::Numpad5:
+			return 0x4c;
+        case KeybdKey::Type::Numpad6:
+			return 0x4d;
+        case KeybdKey::Type::Numpad7:
+			return 0x47;
+        case KeybdKey::Type::Numpad8:
+			return 0x48;
+        case KeybdKey::Type::Numpad9:
+			return 0x49;
+        case KeybdKey::Type::F1:
+			return 0x3b;
+        case KeybdKey::Type::F2:
+			return 0x3c;
+        case KeybdKey::Type::F3:
+			return 0x3d;
+        case KeybdKey::Type::F4:
+			return 0x3e;
+        case KeybdKey::Type::F5:
+			return 0x3f;
+        case KeybdKey::Type::F6:
+			return 0x40;
+        case KeybdKey::Type::F7:
+			return 0x41;
+        case KeybdKey::Type::F8:
+			return 0x42;
+        case KeybdKey::Type::F9:
+			return 0x43;
+        case KeybdKey::Type::F10:
+			return 0x44;
+        case KeybdKey::Type::NumLock:
+			return 0x45;
+        case KeybdKey::Type::ScrollLock:
+			return 0x46;
+        case KeybdKey::Type::CapsLock:
+			return 0x3a;
+        case KeybdKey::Type::LShift:
+			return 0x2a;
+        case KeybdKey::Type::RShift:
+			return 0x36;
+        case KeybdKey::Type::LControl:
+			return 0x1d;
     }
 }
 
